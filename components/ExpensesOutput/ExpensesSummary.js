@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet} from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 
 
