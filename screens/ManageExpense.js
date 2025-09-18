@@ -1,11 +1,15 @@
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import IconButton from "../components/UI/iconButton";
 import { GlobalStyles } from "../constants/styles";
 import Button from "../components/UI/Button";
+import { ExpnsesContext } from "../store/expense-context";
+import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
 // スクリーンはApp.jsの中でナビゲーション登録をしているので、navigationプロパティが引数で使える。
 function ManageExpense({route, navigation}) {
+
+  const expensesCtx = useContext(ExpnsesContext);
 
   // 新規追加の時はparamsがない。route.paras.expsenIdだとそのときにこけてしまうので
   // route.params?としてnull許容をする(javascript構文)　→ 新規の時はundefinedが返ってくる。
@@ -23,6 +27,7 @@ function ManageExpense({route, navigation}) {
   }, [navigation, isEditing]); 
 
   function deleteExpsenseHandler() {
+    expensesCtx.deleteExpeense(editExpnseId);
     navigation.goBack(); //モーダルもこれで閉じる
   }
 
@@ -31,11 +36,30 @@ function ManageExpense({route, navigation}) {
   }
 
   function confirmHandler() {
+    if(isEditing) {
+      expensesCtx.updateExpense(
+        editExpnseId,
+        {
+          description: "test", 
+          amount: '10.00', 
+          date: new Date()
+        }
+      );
+    } else {
+      expensesCtx.addExpense(
+        {
+          description: "test", 
+          amount: '10.00', 
+          date: new Date()
+        }
+      );
+    }
     navigation.goBack(); //モーダルもこれで閉じる
   }
 
   return (
     <View style={styles.container}>
+      <ExpenseForm />
       {/* 以下のViewは横並びのスタイルを適用するためのView */}
       <View style={styles.buttons}>
         <Button mode='flat' onPress={cancelHandler} style={styles.button}>
