@@ -23,15 +23,15 @@ function ManageExpense({route, navigation}) {
   }, [navigation, isEditing]); 
 
   function deleteExpsenseHandler() {
-
+    navigation.goBack(); //モーダルもこれで閉じる
   }
 
   function cancelHandler() {
-
+    navigation.goBack(); //モーダルもこれで閉じる
   }
 
   function confirmHandler() {
-
+    navigation.goBack(); //モーダルもこれで閉じる
   }
 
   return (

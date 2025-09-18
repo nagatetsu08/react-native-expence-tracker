@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons'
+import ExpnsesContextProvider from './store/expense-context';
 
 
 import ManageExpense from './screens/ManageExpense';
@@ -62,33 +63,35 @@ export default function App() {
   return (
     <>
       <StatusBar />
-      <NavigationContainer>
-        {/* StackNavigatorでTOPにタブ切り替えできるTabバーつきの画面を表示する。
-          * 編集する時とか新規追加ではタブを表示させたくないし、ALL、RecentどちらからでもManageExpenseに行かせたいので、
-          * StackNavigatorが親でタブナビゲータが子になる。
-          * 
-        */}
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-            headerTintColor: 'white',
-          }}
-        >
-          <Stack.Screen 
-            name="ExpenseOverview" 
-            component={ExpenseOverview}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen 
-            name="ManageExpense" 
-            component={ManageExpense}
-            options={{
-              // title: 'Manage Expense' // 新規追加モードと編集モードの2つがあるからここでは設定しない
-              presentation: 'modal', //どのように画面を表示するかのモードが選べる
+      <ExpnsesContextProvider>
+        <NavigationContainer>
+          {/* StackNavigatorでTOPにタブ切り替えできるTabバーつきの画面を表示する。
+            * 編集する時とか新規追加ではタブを表示させたくないし、ALL、RecentどちらからでもManageExpenseに行かせたいので、
+            * StackNavigatorが親でタブナビゲータが子になる。
+            * 
+          */}
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
+              headerTintColor: 'white',
             }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+          >
+            <Stack.Screen 
+              name="ExpenseOverview" 
+              component={ExpenseOverview}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen 
+              name="ManageExpense" 
+              component={ManageExpense}
+              options={{
+                // title: 'Manage Expense' // 新規追加モードと編集モードの2つがあるからここでは設定しない
+                presentation: 'modal', //どのように画面を表示するかのモードが選べる
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ExpnsesContextProvider>
     </>
   );
 }
