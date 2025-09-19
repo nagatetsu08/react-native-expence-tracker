@@ -5,6 +5,7 @@ import { GlobalStyles } from "../constants/styles";
 
 import { ExpnsesContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
+import { storeExpense } from "../util/http";
 
 // スクリーンはApp.jsの中でナビゲーション登録をしているので、navigationプロパティが引数で使える。
 function ManageExpense({route, navigation}) {
@@ -41,7 +42,8 @@ function ManageExpense({route, navigation}) {
     if(isEditing) {
       expensesCtx.updateExpense(editExpnseId, expenseData);
     } else {
-      expensesCtx.addExpense(expenseData);
+      storeExpense(expenseData);
+      // expensesCtx.addExpense(expenseData);
     }
     navigation.goBack(); //モーダルもこれで閉じる
   }
