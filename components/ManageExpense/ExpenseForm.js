@@ -3,6 +3,7 @@ import Input from "./Input";
 import { useState } from "react";
 import Button from "../UI/Button";
 import { getFormatdate } from "../../util/data";
+import { GlobalStyles } from "../../constants/styles";
 
 function ExpenseForm({onCancel, submitButtonLabel, onSubmit, defaultValues}) {
 
@@ -18,7 +19,7 @@ function ExpenseForm({onCancel, submitButtonLabel, onSubmit, defaultValues}) {
     // 管理したいステート変数が複数ある場合のやり方
     // TextInputはString型を求めるので、数値をそのまま渡すのはNG。必ずString型に変換すること。
     // バリデーションもやる場合は、画面へのフィードバックも必要なので各パラメータ内もオブジェクトにする。
-    const [input, setInputs] = useState({
+    const [inputs, setInputs] = useState({
         amount: { 
             value : defaultValues ? defaultValues.amount.toString() : '', 
             // isValid: defaultValues ? true : false,
@@ -100,6 +101,7 @@ function ExpenseForm({onCancel, submitButtonLabel, onSubmit, defaultValues}) {
                 // 隣り合う要素にだけ空きスペースを全部使うflex:1を指定したい。
                 // Descriptionにまで設定するとレイアウトが崩れたから
                 style={styles.rowInput}
+                invalid={!inputs.amount.isValid}
             />
             <Input
                 label="Date"
@@ -112,19 +114,25 @@ function ExpenseForm({onCancel, submitButtonLabel, onSubmit, defaultValues}) {
                 // 隣り合う要素にだけ空きスペースを全部使うflex:1を指定したい。
                 // Descriptionにまで設定するとレイアウトが崩れたから
                 style={styles.rowInput}
+                invalid={!inputs.date.isValid}
             />
         </View>
         <Input
             label="Description" 
             textInputConfig={{
-                multiLine: true,
+                multiline: true,
                 autoCorrect: false,         // 誤字もあえて修正しないようにする。
                 autoCapitalize: 'none',     // どのような文書を打っても勝手に大文字変換したりしないようにする
                 onChangeText: inputChangeHandler.bind(this, 'description'),
-                value: inputs.description.value
+                value: inputs.description.value,
             }}
+            invalid={!inputs.description.isValid}
         />
-        {formIsInvalid && <Text>Invalid Inputs</Text>}
+        {formIsInvalid && 
+            (
+                <Text style={styles.errorText}>Invalid Inputs</Text>
+            )
+        }
         {/* 以下のViewは横並びのスタイルを適用するためのView */}
         <View style={styles.buttons}>
             <Button mode='flat' onPress={onCancel} style={styles.button}>
@@ -167,4 +175,9 @@ const styles = StyleSheet.create({
         minWidth: 120,
         marginHorizontal: 8
     },
+    errorText: {
+        textAlign: 'center',
+        color: GlobalStyles.colors.error500,
+        margin: 8
+    }
 });

@@ -12,9 +12,8 @@ function RecentExpenses() {
   const recentExpenses = expensesCtx.expenses.filter((expense) => {
     const today = new Date();
     const get7DaysAgo = getDateMinusDate(today, 7);
-    
     // 支出の中で7日前より後の日付のexpenseデータだけ返している。
-    return expense.data > get7DaysAgo
+    return expense.date > get7DaysAgo
   })
 
   return (
