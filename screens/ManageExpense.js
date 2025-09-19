@@ -2,7 +2,7 @@ import { useContext, useLayoutEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import IconButton from "../components/UI/iconButton";
 import { GlobalStyles } from "../constants/styles";
-import Button from "../components/UI/Button";
+
 import { ExpnsesContext } from "../store/expense-context";
 import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 
@@ -18,6 +18,8 @@ function ManageExpense({route, navigation}) {
   // 値をboolean変換してくれる。値がとれていればtrue、なければfalseに変換してくれる。
   // これもjavascript構文
   const isEditing = !!editExpnseId;
+
+  const selectedExpense = expensesCtx.expenses.find((expense) => expense.id === editExpnseId);
 
   // userLayoutEffectの第二引数はnavigationと内部で条件判断に使われている変数
   useLayoutEffect(() => {
@@ -35,40 +37,28 @@ function ManageExpense({route, navigation}) {
     navigation.goBack(); //モーダルもこれで閉じる
   }
 
-  function confirmHandler() {
+  function confirmHandler(expenseData) {
     if(isEditing) {
-      expensesCtx.updateExpense(
-        editExpnseId,
-        {
-          description: "test", 
-          amount: '10.00', 
-          date: new Date()
-        }
-      );
+      expensesCtx.updateExpense(editExpnseId, expenseData);
     } else {
-      expensesCtx.addExpense(
-        {
-          description: "test", 
-          amount: '10.00', 
-          date: new Date()
-        }
-      );
+      expensesCtx.addExpense(expenseData);
     }
     navigation.goBack(); //モーダルもこれで閉じる
   }
 
   return (
     <View style={styles.container}>
-      <ExpenseForm />
-      {/* 以下のViewは横並びのスタイルを適用するためのView */}
-      <View style={styles.buttons}>
-        <Button mode='flat' onPress={cancelHandler} style={styles.button}>
-          Cancel
-        </Button>
-        <Button onPress={confirmHandler} style={styles.button}>
-          {isEditing ? 'update' : 'Add'}
-        </Button>
-      </View>
+      {/*
+        * 前にもどこかで書いたが、コンポーネント独自の引数で関数を渡す場合、ここで渡しているのは
+        * 関数の定義のみ。実際の引数は呼び出したコンポーネント内で渡した関数を使う際に()で指定して使う。
+        * なので、以下のonCancelとか、onSubmitで渡すのはこのクラス内で定義した関数定義（関数の名前）だけ 
+       */}
+      <ExpenseForm 
+        onCancel={cancelHandler}
+        onSubmit={confirmHandler}
+        submitButtonLabel={isEditing ? 'Update' : 'Add'}
+        defaultValues={selectedExpense}
+      />
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -90,15 +80,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800
-  },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8
   },
   deleteContainer: {
     marginTop: 16,

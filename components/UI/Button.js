@@ -19,7 +19,7 @@ function Button({children, onPress, mode, style}) {
     )
 }
 
-export default Button;
+export default Button;  
 
 const styles = StyleSheet.create({
     button: {
